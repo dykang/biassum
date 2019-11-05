@@ -86,14 +86,16 @@ class Dataset(object):
                     src_sents = split_by_sent_tokens_and_remove_them(pair[0].replace(' <P>','').split(' '))
                     tgt_sents = split_by_sent_tokens_and_remove_them(pair[1].replace(' <P>','').split(' '))
 
+
+                    #Since booksum samples are too long, only the first 1,000 sentences and the first 500 sentences were used as a src/tgt sents.
                     if self.dataset == 'booksum':
                         src_sents = src_sents[:1000]
                         tgt_sents = tgt_sents[:50]
                 pairs.append(Example(src_sents, tgt_sents)) #None, None,
         print('Number of sentences:%d' % (len(pairs)))
-        #NOTE Don't do this ever never!!!!! you can do the second job once you load pairs, right?
-        #return pairs, int(np.mean([len(example.tgt_sents) for example in pairs]))
-        return pairs #, int(np.mean([len(example.tgt_sents) for example in pairs]))
+        return pairs
+
+##NOTE DO WE REALLY NEED TO RELEASE FOLLOWING CODES?
 
     def load_volume_data(self,algorithm):
         volume_dict = dict()
@@ -132,7 +134,7 @@ class Dataset(object):
                   decode_path.append(os.path.join(self.path,'ext',self.dataset,self.dataset_type,self.emb,'target2'))
 
             decode_path.append(os.path.join(self.path,'ext',self.dataset,self.dataset_type,self.emb,algorithm))
-            replace_words = ['_tgt.txt','aaa','_target.txt']
+            replace_words = ['_target.txt']
         else:
             if os.path.exists(os.path.join(self.path,'ext',self.dataset,self.dataset_type,self.emb,algorithm,'decode')):
                   decode_path.append(os.path.join(self.path,'ext',self.dataset,self.dataset_type,self.emb,algorithm,'decode'))
@@ -141,7 +143,7 @@ class Dataset(object):
                   decode_path.append(os.path.join(self.path,'ext',self.dataset,self.dataset_type,self.emb,algorithm,'decoder'))
 
             decode_path.append(os.path.join(self.path,'ext',self.dataset,self.dataset_type,self.emb,algorithm,'decoded'))
-            replace_words = ['_decoded.txt','_decode.txt','_decoder.txt']
+            replace_words = ['_decoded.txt']
         for path in decode_path:
             sorted_dir_decode = sorted(os.listdir(path))
             for f in sorted_dir_decode:
@@ -150,21 +152,14 @@ class Dataset(object):
                 if f.replace(replace_words[0],"").replace(replace_words[1],"").replace(replace_words[2],"")=='.,':
                     continue
                 idx = int(f.replace(replace_words[0],"").replace(replace_words[1],"").replace(replace_words[2],""))
-                #import pdb; pdb.set_trace();
                 if idx not in decoded_dict:
-                    #import pdb; pdb.se();
                     with open(os.path.join(path,f), 'rt', encoding='utf_8') as decoded_file:
                         decoded_indiv = []
                         for i, line in enumerate(decoded_file):
                             decoded_indiv += line.lower().replace("\n","").split(' ')
                     decoded_dict[idx] = decoded_indiv
         #for target2
-        #import pdb; pdb.set_trace();
         return decoded_dict
-
-
-        print("%d oracle pairs." % len(oracle_indexs))
-        return oracle_indexs
 
     def load_oracle_data(self):
         filename = os.path.join(self.path,'bh', '%s.%s.bh.gz' % (self.dataset, self.dataset_type))
@@ -175,8 +170,7 @@ class Dataset(object):
         with open(filename, 'rt', encoding='utf-8') as f:
             for i, line in enumerate(f):
                 pair = line.strip().split('\t')
-                #import pdb; pdb.set_trace();
-                #src_sents = sent_tokenize(pair[0])
+                #If no oracle was found...
                 if len(pair) != 4:
                     rouge = [0.0]
                     indexs = [[]]
@@ -184,27 +178,17 @@ class Dataset(object):
                     rouge = [float(x) for x in pair[2].split(',')]
                     indexs = json.loads('[' + pair[3] + ']')
 
-                ##Exception for newsroom, test, 35382 originally 35383
-                if i == 35382 and self.dataset == 'newsroom' and self.dataset_type=='test':
-                    oracle_indexs.append(OracleIndexs([0.0],[[]]))
-
                 oracle_indexs.append(OracleIndexs(rouge,indexs))
-
-                if len(oracle_indexs) == 347582 and self.dataset =='gigaword' and self.dataset_type =='test':
-                    oracle_indexs.append(OracleIndexs(rouge,indexs))
-
         print("%d oracle pairs." % len(oracle_indexs))
         return oracle_indexs
 
     def save_oracle_text(self):
         oracle_indexs = self.load_oracle_data()
-        #import pdb; pdb.set_trace();
         oracle_path = os.path.join(self.path,'ext',self.dataset,self.dataset_type,'oracle')
 
         if os.path.exists(oracle_path) and len(os.listdir(oracle_path))>0:
             print("Oracle already exists. Number of Files: %d" %(len(os.listdir(oracle_path))))
             return
-        #newsroom test --> 35282 --> +1
         elif not os.path.exists(oracle_path):
             os.makedirs(oracle_path)
 
@@ -213,8 +197,6 @@ class Dataset(object):
         for idx in range(len(pairs)):
             idx_pad = str(idx+diff_length).zfill(6)
             best_idx = oracle_indexs[idx].indexs[0]
-            #if len(oracle_indexs[idx].src_sents)!=len(pairs[idx+diff_length].src_sents):
-            #    diff_length +=1
             if len(best_idx)==0:
                 continue
             if idx+diff_length < len(pairs):
@@ -223,5 +205,4 @@ class Dataset(object):
                 txt_oracle.write('\n'.join([' '.join(x) for x in oracle_texts]))
                 txt_oracle.close()
 
-        #import pdb; pdb.set_trace()
         print("Save oracle ! %d docs" %(len(os.listdir(oracle_path))))

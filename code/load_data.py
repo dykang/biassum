@@ -22,8 +22,6 @@ if __name__ == '__main__':
     data = Dataset(dataset=args.dataset, dataset_type=args.dataset_type, path=args.path)
     pairs = data.load_dataset()
 
-    from pdb import set_trace; set_trace()
-    # calculate basic statistics
 
 
 
