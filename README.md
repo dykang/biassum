@@ -46,7 +46,7 @@ Please check [task] tab for more details in [BiasSum.com/task](http://dongtae.lt
 | News | XSum | [link](http://dongtae.lti.cs.cmu.edu/data/biassum_v0.1/xsum.all.zip)  | [link](https://github.com/EdinburghNLP/XSum) |
 | Papers | PeerRead | [link](http://dongtae.lti.cs.cmu.edu/data/biassum_v0.1/peerread.all.zip)  | [link](https://github.com/allenai/PeerRead) |
 | Papers | PubMed | [link](http://dongtae.lti.cs.cmu.edu/data/biassum_v0.1/pubmed.all.zip)  | [link](https://github.com/armancohan/long-summarization) |
-| Books | BookSum | - | [[link]](https://www.aclweb.org/anthology/D07-1040.pdf) |
+| Books | BookSum | - | [link](https://www.aclweb.org/anthology/D07-1040.pdf) |
 | Dialogues | AMI | [link](http://dongtae.lti.cs.cmu.edu/data/biassum_v0.1/ami.all.zip)  | [link](http://groups.inf.ed.ac.uk/ami/corpus/) |
 | Posts | Reddit | [link](http://dongtae.lti.cs.cmu.edu/data/biassum_v0.1/reddit.all.zip)  | [link](http://www.cs.columbia.edu/~ouyangj/aligned-summarization-data/) |
 | Script | MovieScript | [link](http://dongtae.lti.cs.cmu.edu/data/biassum_v0.1/moviescript.all.zip)  | [link](https://github.com/EdinburghNLP/scriptbase) |
