@@ -39,6 +39,8 @@ python example/data_load.py --dataset AMI
 ### Summarization Corpora
 Please check [task] tab for more details in [BiasSum.com/task](http://dongtae.lti.cs.cmu.edu:3232/task)). If you like to download all the preprocessed dataset at once, please download [here](http://dongtae.lti.cs.cmu.edu/data/biassum_v0.1/biassum_data_v0.1.zip).
 
+NOTE: the links are not available now. Please download the pre-processed datasets [here](https://drive.google.com/drive/folders/16aZ1uME_cUdq0t2Wlq-ftbt_ep2RMsmD?usp=sharing).
+
 | Type |  Name | Preprocessed Dataset | Original |
 | :---: | :---: | :---: | :---: |
 | News | CNNDM | [link](http://dongtae.lti.cs.cmu.edu/data/biassum_v0.1/cnndm.all.zip)  | [link](https://github.com/abisee/cnn-dailymail) |
